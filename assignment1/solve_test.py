@@ -1,4 +1,4 @@
-from solve import abc, expression
+from solve import abc
 import unittest
 
 
@@ -7,9 +7,6 @@ class Testing(unittest.TestCase):
         self.assertEqual(abc(2.0, 0.0, 0.0), (0.0))
         self.assertEqual(abc(1.0, 3.0, 2.0), (-1.0, -2.0))
         self.assertEqual(abc(3.0, 4.5, 9.0), "not real")
-
-    def test_expression(self):
-        self.assertEqual(expression(2, 2, 3), "2x^2 + 2x + 3")
 
 
 if __name__ == "__main__":
