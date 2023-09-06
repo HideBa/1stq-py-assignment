@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "1stq-py-assignment"
+version = "0.1.0"
+description = ""
+authors = ["HideBa <baba.papa1120.ba@gmail.com>"]
+readme = "README.md"
+packages = [{include = "1stq_py_assignment"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.5"
+flake8 = "^6.1.0"
+black = "^23.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
