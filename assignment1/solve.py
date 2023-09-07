@@ -70,3 +70,7 @@ def discriminant(a, b, c):
 abc(2.0, 0.0, 0.0)
 abc(1.0, 3.0, 2.0)
 abc(3.0, 4.5, 9.0)
+# output
+# The roots of 2.0x^2 + 0.0x + 0.0 are: x = 0.0
+# The roots of 1.0x^2 + 3.0x + 2.0 are: x1 = -1.0, x2 = -2.0
+# The roots of 3.0x^2 + 4.5x + 9.0 are: not real
