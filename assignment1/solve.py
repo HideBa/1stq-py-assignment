@@ -30,7 +30,7 @@ def abc(a, b, c):
         return x1, x2
     elif d == 0:
         x = -b / (2 * a)
-        if x == -0.0:
+        if x == -0.0:  # Because Python has -0.0 and 0.0
             x = 0.0
         print(
             TEXT1

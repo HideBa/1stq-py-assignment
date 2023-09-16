@@ -24,8 +24,8 @@ def k(angle_corner, angle_interior):
     return 1 / (cot(angle_corner) - cot(angle_interior))
 
 
-# alpha, beta, gamma are in degree
-# this will return (Px, Py)
+# ax:number, ay:number, bx:number, by:number, cx:number, cy:number, alpha:number(degree), beta:number(degree)
+# -> (px:number, py:number)
 def tienstra(ax, ay, bx, by, cx, cy, alpha, beta):
     node_ab = distance(ax, ay, bx, by)
     node_bc = distance(bx, by, cx, cy)
@@ -43,9 +43,14 @@ def tienstra(ax, ay, bx, by, cx, cy, alpha, beta):
 
     px = (k1 * ax + k2 * bx + k3 * cx) / (k1 + k2 + k3)
     py = (k1 * ay + k2 * by + k3 * cy) / (k1 + k2 + k3)
+
     print("(Px, Py) is " + "(" + str(px) + ", " + str(py) + ")")
+
     return (px, py)
 
 
 # result(Px, Py) is (2082.1882960042926, 5902.852592437437)
 tienstra(1000.0, 5300.0, 2200.0, 6300.0, 3100.0, 5000.0, 115.052, 109.3045)
+
+# Example of an own triangle. Expected result(Px, Py) is (2.1930476110179553, 2.8386095222035914)
+tienstra(1.0, 2.0, 4.0, 2.0, 2.0, 5.0, 120, 120)
