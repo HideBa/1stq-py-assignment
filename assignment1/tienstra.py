@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 1
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba & Yan Gao
+# Studentnumbers: 5967538, 6006175
 
 import math
 
@@ -44,13 +44,14 @@ def tienstra(ax, ay, bx, by, cx, cy, alpha, beta):
     px = (k1 * ax + k2 * bx + k3 * cx) / (k1 + k2 + k3)
     py = (k1 * ay + k2 * by + k3 * cy) / (k1 + k2 + k3)
 
-    print("(Px, Py) is " + "(" + str(px) + ", " + str(py) + ")")
+    # Because Python doesn't show the exact value of float, we use format() to show 10 digits after the decimal point.
+    print("(Px, Py) is " + "(" + format(px, ".10f") + ", " + format(py, ".10f") + ")")
 
     return (px, py)
 
 
-# result(Px, Py) is (2082.1882960042926, 5902.852592437437)
+# Result(Px, Py) is (2082.1882960043, 5902.8525924374)
 tienstra(1000.0, 5300.0, 2200.0, 6300.0, 3100.0, 5000.0, 115.052, 109.3045)
 
-# Example of an own triangle. Expected result(Px, Py) is (2.1930476110179553, 2.8386095222035914)
+# Example of an own triangle. Expected (Px, Py) is (2.1930476110, 2.8386095222)
 tienstra(1.0, 2.0, 4.0, 2.0, 2.0, 5.0, 120, 120)

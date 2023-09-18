@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 1
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba & Yan Gao
+# Studentnumbers: 5967538, 6006175
 
 from math import sqrt
 
