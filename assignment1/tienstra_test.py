@@ -1,4 +1,4 @@
-from tienstra import distance, tienstra, angle, cot, k
+from tienstra import distance
 import unittest
 
 
