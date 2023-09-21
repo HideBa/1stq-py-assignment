@@ -15,12 +15,10 @@ def dd_dms(decdegrees):
 
     3-tuple of *not* rounded floats (degrees, minutes, seconds)
     """
-    # degree in decimal: 111.111
-    #
     min, sec = divmod(abs(decdegrees) * 3600, 60)
     degree, min = divmod(min, 60)
     # Return minus degree if it's minus
-    degree = degree if degree >= 0 else -1 * degree
+    degree = degree if decdegrees >= 0 else -1 * degree
     # TODO: check later
     return (degree, min, sec)
 
@@ -41,30 +39,18 @@ def format_dms(dms, is_latitude):
 
     Formatted string
     """
-    template = "{}   {}°  {}'  {}\""
+    # N   0°  0'  0.0000", E   0°  0'  0.0000"
+    # N  52°  0'  0.0000", E   4° 19' 43.3200"
+    template = "{}{:4}°{:3}'{:>8.4f}\""
     if is_latitude:
         north_south = "N" if dms[0] >= 0 else "S"
-        return template.format(
-            north_south, int(dms[0]), int(dms[1]), "{:.4f}".format(dms[2])
-        )
+        return template.format(north_south, int(abs(dms[0])), int(dms[1]), dms[2])
     else:
         east_west = "E" if dms[0] >= 0 else "W"
-        return template.format(
-            east_west, int(dms[0]), int(dms[1]), "{:.4f}".format(dms[2])
-        )
+        return template.format(east_west, int(abs(dms[0])), int(dms[1]), dms[2])
 
 
 def format_dd_as_dms(coordinate):
-    """Returns a formatted string for a coordinate
-
-    Arguments:
-
-    coordinate -- 2-tuple: (latitude, longitude)
-
-    returns:
-
-    Formatted string
-    """
     lat, lng = dd_dms(coordinate[0]), dd_dms(coordinate[1])
     lat_text, lng_text = format_dms(lat, True), format_dms(lng, False)
     return "{}, {}".format(lat_text, lng_text)
