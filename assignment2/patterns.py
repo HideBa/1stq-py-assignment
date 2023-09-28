@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 2
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba, Shawn Tew
+# Studentnumbers: 5967538, 5925673
 
 
 def wkt(p1, p2, p3, p4):
