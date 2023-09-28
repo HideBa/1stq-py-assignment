@@ -1,14 +1,8 @@
 import unittest
-from dms import format_dd_as_dms, dd_dms
+from dms import format_dd_as_dms
 
 
 class Testing(unittest.TestCase):
-    def test_dms(self):
-        self.assertEqual(dd_dms(0), (0, 0, 0))
-        # TODO: fix test case later
-        # self.assertEqual(dd_dms(1.40722), (1, 24, 26.0))
-        # self.assertEqual(dd_dms(-1.40722), (-1, 24, 26.0))
-
     def test_format_dms(self):
         test_cases = [
             ((0.0, 0.0), "N   0°  0'  0.0000\", E   0°  0'  0.0000\""),

@@ -4,30 +4,26 @@
 
 
 from nominatim import nominatim
-
-# from nominatim_offline import nominatim # can be used for testing if you are offline
-# or if the online Nominatim service does not work
 from dms import format_dd_as_dms
 from distance import haversin
 
 
 def query():
     print("I will find the distance for you between 2 places.")
+
     while True:
-        user_input1 = input("Enter place 1?")
-        user_input2 = input("Enter place 2?")
+        user_input1 = input("Enter place 1? ")
+        user_input2 = input("Enter place 2? ")
         if user_input1 == "quit" or user_input2 == "quit":
             print("Bye bye.")
             break
 
-        if user_input1 == "" or user_input2 == "":
-            # TODO: check what is expected behaviour
-            print("you need to input name of city")
         coordinate1 = nominatim(user_input1)
         coordinate2 = nominatim(user_input2)
 
-        # TODO: check geo-coding result is a little bit different
-        if not (len(coordinate1) == 2 and len(coordinate2) == 2):
+        if not (len(coordinate1) == 2 or len(coordinate2) == 2):
+            print("I did not understand this place: {}".format(user_input1))
+            print("I did not understand this place: {}".format(user_input2))
             continue
 
         print(
@@ -39,7 +35,7 @@ def query():
 
         distance = haversin(coordinate1, coordinate2)
         print(
-            "The distance between {} and {} is {}km".format(
+            "The distance between {} and {} is {} km".format(
                 user_input1, user_input2, "{:.1f}".format(distance)
             )
         )

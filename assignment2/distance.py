@@ -8,6 +8,7 @@ from math import radians, cos, sin, asin, sqrt
 def haversin(latlon1, latlon2):
     phi1, lambda1 = latlon1
     phi2, lambda2 = latlon2
+
     delta_phi = phi2 - phi1
     delta_lambda = lambda2 - lambda1
 

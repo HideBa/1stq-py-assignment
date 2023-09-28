@@ -1,5 +1,5 @@
 # GEO1000 - Assignment 2
-# Authors: Hidemichi Baba
+# Authors: Hidemichi Baba,
 # Studentnumbers: 5967538
 
 
@@ -15,6 +15,4 @@ if __name__ == "__main__":
     print("running robot.py directly")
     print(move(1, 4, 5))
     print(move(4, 1, 5))
-    print(move(1, 4, 9))
-    print(move(1, 4, 6))
     print(move(1, 4, 2))
