@@ -30,7 +30,7 @@ def pattern_a(level, center, size, ratio, file_nm):
     point4 = (center[0] - size, center[1] + size)
 
     with open(file_nm, "a") as f:
-        f.write("{};\n".format(wkt(point1, point2, point3, point4)))
+        f.write("{};{}\n".format(level, wkt(point1, point2, point3, point4)))
     level = level - 1
     for point in [point1, point2, point3, point4]:
         pattern_a(level, point, size / ratio, ratio, file_nm)
@@ -44,11 +44,10 @@ def pattern_b(level, center, size, ratio, file_nm):
     point2 = (center[0] + size, center[1] - size)
     point3 = (center[0] + size, center[1] + size)
     point4 = (center[0] - size, center[1] + size)
-    level = level - 1
     for point in [point1, point2, point3, point4]:
-        pattern_b(level, point, size / ratio, ratio, file_nm)
+        pattern_b(level - 1, point, size / ratio, ratio, file_nm)
     with open(file_nm, "a") as f:
-        f.write("{};\n".format(wkt(point1, point2, point3, point4)))
+        f.write("{};{}\n".format(level, wkt(point1, point2, point3, point4)))
 
 
 def pattern_c(level, center, size, ratio, file_nm):
@@ -62,20 +61,18 @@ def pattern_c(level, center, size, ratio, file_nm):
     point1_2 = [point1, point2]
     point3_4 = [point3, point4]
 
-    level = level - 1
-
     for point in point3_4:
-        pattern_c(level, point, size / ratio, ratio, file_nm)
+        pattern_c(level - 1, point, size / ratio, ratio, file_nm)
 
     with open(file_nm, "a") as f:
-        f.write("{};\n".format(wkt(point1, point2, point3, point4)))
+        f.write("{};{}\n".format(level, wkt(point1, point2, point3, point4)))
 
     for point in point1_2:
-        pattern_c(level, point, size / ratio, ratio, file_nm)
+        pattern_c(level - 1, point, size / ratio, ratio, file_nm)
 
 
 def main(
-    n=1, c=(0.0, 0.0), size=10.0, ratio=2.2
+    n=3, c=(0.0, 0.0), size=10.0, ratio=2.2
 ):  # note, optional arguments, see Sec 13.5 of ThinkPython2
     """The starting point of this program.
     Writes for every output file the first line and allows
