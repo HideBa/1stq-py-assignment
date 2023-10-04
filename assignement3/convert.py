@@ -20,14 +20,6 @@ def read_asc(file_nm):
           nodata_value -- int
           data -- list of lists, with integers
     """
-    PARAMETERS = [
-        "NCOLS",
-        "NROWS",
-        "XLLCORNER",
-        "YLLCORNER",
-        "CELLSIZE",
-        "NODATA_VALUE",
-    ]
 
     nrows = None
     ncols = None
@@ -37,7 +29,7 @@ def read_asc(file_nm):
     nodata_value = -9999
     data = None
     with open(file_nm, "r") as asc_file:
-        file_content = asc_file.readlines()  # line0 to line6
+        file_content = asc_file.readlines()
         header_lines, body = file_content[:6], file_content[6:]
         for line in header_lines:
             if line.__contains__("NCOLS"):
@@ -81,8 +73,14 @@ def rowcol_to_xy_center(cur_row, cur_col, rows, cols, xll, yll, size):
             x -- float
             y -- float
     """
+    if cur_row <= 0 or cur_col <= 0:
+        print("no!!!")
+        return None
 
-    pass
+    nth_row_from_bottom = rows - cur_row
+    x = xll + size * cur_col
+    y = yll + size * nth_row_from_bottom
+    return (x, y)
 
 
 def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
@@ -101,9 +99,83 @@ def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
       list of segments: [[(x1,y1), (x2,y2)], ..., [(xm,ym), (xn,yn)]]
 
     """
-    rows_length = len(rows)
-    cols_length = len(cols)
-    pass
+    virtual_cell_num = (rows - 1) * (cols - 1)  # e.g. there are 4 v-cells for 3x3
+
+    coordinates = []
+    for i in range(rows - 1):
+        for j in range(cols - 1):
+            # TODO: consider no data value
+            bottom_left = raster[i + 1][j]
+            bottom_right = raster[i + 1][j + 1]
+            top_right = raster[i][j + 1]
+            top_left = raster[i][j]
+            cell_index = (
+                bottom_left * 1 + bottom_right * 2 + top_right * 4 + top_left * 8
+            )
+            cell_center = rowcol_to_xy_center(i + 1, j + 1, rows, cols, xll, yll, size)
+            # TODO: check later
+            if cell_center is None:
+                return
+
+            half_edge = size / 2
+            coordinate = []
+            if cell_index == 0 or cell_index == 15:
+                continue
+            elif cell_index == 1 or cell_index == 14:
+                coordinate = [
+                    (cell_center[0], cell_center[1] - half_edge),
+                    (cell_center[0] - half_edge, cell_center[1]),
+                ]
+            elif cell_index == 2 or cell_index == 13:
+                coordinate = [
+                    (cell_center[0], cell_center[1] - half_edge),
+                    (cell_center[0] + half_edge, cell_center[1]),
+                ]
+            elif cell_index == 3 or cell_index == 12:
+                coordinate = [
+                    (cell_center[0] - half_edge, cell_center[1]),
+                    (cell_center[0] + half_edge, cell_center[1]),
+                ]
+            elif cell_index == 4 or cell_index == 11:
+                coordinate = [
+                    (cell_center[0] + half_edge, cell_center[1]),
+                    (cell_center[0], cell_center[1] + half_edge),
+                ]
+            elif cell_index == 5:
+                coordinate = [
+                    [
+                        (cell_center[0], cell_center[1] - half_edge),
+                        (cell_center[0] + half_edge, cell_center[1]),
+                    ],
+                    [
+                        (cell_center[0] - half_edge, cell_center[1]),
+                        (cell_center[0], cell_center[1] + half_edge),
+                    ],
+                ]
+            elif cell_index == 6 or cell_index == 9:
+                coordinate = [
+                    (cell_center[0], cell_center[1] - half_edge),
+                    (cell_center[0], cell_center[1] + half_edge),
+                ]
+            elif cell_index == 7 or cell_index == 8:
+                coordinate = [
+                    (cell_center[0] - half_edge, cell_center[1]),
+                    (cell_center[0], cell_center[1] + half_edge),
+                ]
+            elif cell_index == 10:
+                coordinate = [
+                    [
+                        (cell_center[0], cell_center[1] - half_edge),
+                        (cell_center[0] - half_edge, cell_center[1]),
+                    ],
+                    [
+                        (cell_center[0] + half_edge, cell_center[1]),
+                        (cell_center[0], cell_center[1] + half_edge),
+                    ],
+                ]
+            coordinates.append(coordinate)
+    print("coordinates: ", coordinates[0:20])
+    return coordinates
 
 
 def wkt(segment):
@@ -116,7 +188,10 @@ def wkt(segment):
     segment -- a list with 2 tuples: [(x1,y1), (x2,y2)]
     returns -- str
     """
-    pass
+    # print("seg---", segment)
+    return "LINESTRING({} {}, {} {});\n".format(
+        segment[0][0], segment[0][1], segment[1][0], segment[1][1]
+    )
 
 
 def write_segments(segments, out_file_nm):
@@ -127,7 +202,12 @@ def write_segments(segments, out_file_nm):
 
     returns -- None
     """
-    pass
+    segments_str = ""
+    for segment in segments:
+        wkt_str = wkt(segment)
+        segments_str += wkt_str
+    with open(out_file_nm, "w+", encoding="utf-8") as file:
+        file.write(segments_str)
 
 
 def convert(file_nm_in, file_nm_out):
@@ -143,7 +223,10 @@ def convert(file_nm_in, file_nm_out):
 
 def main():
     """Starting point of the program, asks user for the name of the input file."""
-    convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
+    # convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
+    # convert("./assignement3/giraffe.asc", "./assignement3/giraffe.wkt")
+    # convert("./assignement3/holland.asc", "./assignement3/holland.wkt")
+    # convert("./assignement3/snail.asc", "./assignement3/snail.wkt")
     print("Done, result stored to out.wkt")
 
 
