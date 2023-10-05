@@ -7,7 +7,7 @@ def get_payload(raw_msg):
     """
     Returns tuple of payload and padding of a given raw AIS message
 
-    For the raw AIS message: 
+    For the raw AIS message:
 
         !AIVDM,1,1,1,A,13an?n002APDdH0Mb85;8'sn06sd,0*76
 
@@ -22,7 +22,8 @@ def get_payload(raw_msg):
     Returns:
         tuple (payload:str, padding:int)
     """
-    pass
+    *rest, payload, padding = raw_msg.split(",")
+    return (payload, padding)
 
 
 def read_payloads(filenm):
@@ -39,7 +40,14 @@ def read_payloads(filenm):
         A list with tuples:
         [(timestamp:str, payload:str, padding:int), ...]
     """
-    pass
+    ais_data_list = []
+    with open(filenm, "r") as file:
+        lines = file.readlines()
+        for line in lines:
+            timestamp, raw_msg = line.split("\t")
+            payload, padding = get_payload(raw_msg)
+            ais_data_list.append((timestamp, payload, padding))
+    return ais_data_list
 
 
 def _test():

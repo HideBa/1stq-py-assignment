@@ -9,10 +9,12 @@ def main(in_filenm, out_filenm):
     tab-separated text file readable with QGIS
     """
     payloads = read_payloads(in_filenm)
+    print("payload: ", payloads)
     lst = as_timestamp_bitlist(payloads)
     lst = as_dicts(lst)
     write_tsv(lst, out_filenm)
 
 
 if __name__ == "__main__":
-    main("aislog.txt", "aislogout.txt")
+    # TODO: fix later
+    main("./assignment3/aislog.txt", "./assignment3/aislogout.txt")

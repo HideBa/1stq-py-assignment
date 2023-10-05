@@ -224,9 +224,9 @@ def convert(file_nm_in, file_nm_out):
 def main():
     """Starting point of the program, asks user for the name of the input file."""
     # convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
-    # convert("./assignement3/giraffe.asc", "./assignement3/giraffe.wkt")
-    # convert("./assignement3/holland.asc", "./assignement3/holland.wkt")
-    # convert("./assignement3/snail.asc", "./assignement3/snail.wkt")
+    # convert("./assignment3/giraffe.asc", "./assignment3/giraffe.wkt")
+    # convert("./assignment3/holland.asc", "./assignment3/holland.wkt")
+    # convert("./assignment3/snail.asc", "./assignment3/snail.wkt")
     print("Done, result stored to out.wkt")
 
 
