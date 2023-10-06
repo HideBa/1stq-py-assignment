@@ -22,8 +22,9 @@ def get_payload(raw_msg):
     Returns:
         tuple (payload:str, padding:int)
     """
-    *rest, payload, padding = raw_msg.split(",")
-    return (payload, padding)
+    *_, payload, right = raw_msg.split(",")
+    padding, *_ = right.split("*")
+    return (payload, int(padding))  # TODO: check if padding should be int or string
 
 
 def read_payloads(filenm):
@@ -40,14 +41,14 @@ def read_payloads(filenm):
         A list with tuples:
         [(timestamp:str, payload:str, padding:int), ...]
     """
-    ais_data_list = []
+    ais_logs = []
     with open(filenm, "r") as file:
         lines = file.readlines()
         for line in lines:
             timestamp, raw_msg = line.split("\t")
             payload, padding = get_payload(raw_msg)
-            ais_data_list.append((timestamp, payload, padding))
-    return ais_data_list
+            ais_logs.append((timestamp, payload, padding))
+    return ais_logs
 
 
 def _test():

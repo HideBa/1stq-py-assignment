@@ -7,7 +7,8 @@ readme = "README.md"
 packages = [{include = "1stq_py_assignment"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
+numpy = "^1.26.0"
 
 
 [tool.poetry.group.dev.dependencies]
