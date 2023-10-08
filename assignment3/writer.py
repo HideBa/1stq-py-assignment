@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 3
-# Authors:
-# Studentnumbers:
+# Authors: Hidemichi Baba
+# Studentnumbers: 5967538
 
 
 def write_tsv(lst, filenm_out):

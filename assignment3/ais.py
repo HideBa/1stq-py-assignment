@@ -1,3 +1,7 @@
+# GEO1000 - Assignment 3
+# Authors: Hidemichi Baba
+# Studentnumbers: 5967538
+
 from loader import read_payloads
 from transformer import as_timestamp_bitlist, as_dicts
 from writer import write_tsv
