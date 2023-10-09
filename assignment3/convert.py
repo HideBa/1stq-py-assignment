@@ -204,7 +204,7 @@ def write_segments(segments, out_file_nm):
 
     returns -- None
     """
-    segments_str = ""
+    segments_str = "geometry\n"
     for segment in segments:
         wkt_str = wkt(segment)
         segments_str += wkt_str
