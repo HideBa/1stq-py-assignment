@@ -24,7 +24,7 @@ def get_payload(raw_msg):
     """
     *_, payload, right = raw_msg.split(",")
     padding, *_ = right.split("*")
-    return (payload, int(padding))  # TODO: check if padding should be int or string
+    return (payload, int(padding))
 
 
 def read_payloads(filenm):

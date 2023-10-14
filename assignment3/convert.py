@@ -51,16 +51,13 @@ def read_asc(file_nm):
                 _, nodata_value_str = line.split(" ")
                 nodata_value = int(nodata_value_str)
 
-        # TODO: refactor later
-        combined_body = "".join(body)  # [["0", "0"], ["0", "0"]]]
-        clean_body = combined_body.replace("\n", " ")  # "0 0 0 0"
-        binary_str_list = clean_body.split(" ")  # ["0", "0", "0", "0"]
-        cursur = 0
-        for _ in range(nrows):  # type: ignore
-            binary_list = [int(b) for b in binary_str_list[cursur : cursur + ncols]]
-            cursur += ncols
-            cell_values.append(binary_list)
-    return (nrows, ncols, xllcorner, yllcorner, cellsize, nodata_value, cell_values)
+        binary_list = []
+        for line in body:
+            binary_strings = line.split(" ")
+            for binary_str in binary_strings:
+                binary_list.append(int(binary_str))
+        data = [binary_list[i : i + ncols] for i in range(0, len(binary_list), ncols)]
+    return (nrows, ncols, xllcorner, yllcorner, cellsize, nodata_value, data)
 
 
 def rowcol_to_xy_center(cur_row, cur_col, rows, cols, xll, yll, size):
@@ -225,12 +222,7 @@ def convert(file_nm_in, file_nm_out):
 
 def main():
     """Starting point of the program, asks user for the name of the input file."""
-    # convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
-    # convert("./assignment3/giraffe.asc", "./assignment3/giraffe.wkt")
-    # convert("./assignment3/holland.asc", "./assignment3/holland.wkt")
-    # convert("./assignment3/snail.asc", "./assignment3/snail.wkt")
-    convert("./assignment3/simple_eol.asc", "./assignment3/simple_eol.wkt")
-    convert("./assignment3/simple_noeol.asc", "./assignment3/simple_noeol.wkt")
+    convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
     print("Done, result stored to out.wkt")
 
 

@@ -16,11 +16,10 @@ def as_timestamp_bitlist(lst):
         list with tuples
     """
 
-    timestamp_bitlist = []
+    timestamp_bits = []
     for timestamp, payload, padding in lst:
-        bit_list = BitList(payload, padding)
-        timestamp_bitlist.append((timestamp, bit_list))
-    return timestamp_bitlist
+        timestamp_bits.append((timestamp, BitList(payload, padding)))
+    return timestamp_bits
 
 
 def as_dicts(lst):
@@ -36,12 +35,12 @@ def as_dicts(lst):
     Returns:
         list with dictionaries
     """
-    dict_list = []
+    dicts = []
     for item in lst:
         decoded_msg = decode_msg_dict(item[0], item[1])
         processed_msg = postprocess_msg_dict(decoded_msg)
-        dict_list.append(processed_msg)
-    return dict_list
+        dicts.append(processed_msg)
+    return dicts
 
 
 def decode_msg_dict(timestamp, bitlist):
@@ -90,7 +89,7 @@ def decode_msg_dict(timestamp, bitlist):
         "maneuver": maneuver,
         "raim": raim,
         "radio": radio,
-        "timestamp": timestamp,  # TODO: check if timestamp is string or int
+        "timestamp": timestamp,  # TODO: check if timestamp is string or int such as unixtime
     }
     return dict
 

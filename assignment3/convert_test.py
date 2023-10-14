@@ -5,6 +5,18 @@ import unittest
 class Testing(unittest.TestCase):
     def test_read_asc(self):
         (rows, cols, xll, yll, size, nodataval, data) = read_asc(
+            "./assignment3/snail.asc"
+        )
+        self.assertEqual(rows, 129)
+        self.assertEqual(cols, 201)
+        self.assertEqual(xll, 100.0)
+        self.assertEqual(yll, 1000.0)
+        self.assertEqual(size, 50)
+        self.assertEqual(nodataval, -9999)
+        self.assertEqual(len(data), 129)
+        self.assertEqual(len(data[0]), 201)
+
+        (rows, cols, xll, yll, size, nodataval, data) = read_asc(
             "./assignment3/giraffe.asc"
         )
         self.assertEqual(rows, 242)
@@ -25,8 +37,8 @@ class Testing(unittest.TestCase):
         self.assertEqual(yll, 1000.0)
         self.assertEqual(size, 50.0)
         self.assertEqual(nodataval, -9999)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(len(data[0]), 395 * 362)
+        self.assertEqual(len(data), 395)
+        self.assertEqual(len(data[0]), 362)
 
         (rows, cols, xll, yll, size, nodataval, data) = read_asc(
             "./assignment3/simple_eol.asc"
