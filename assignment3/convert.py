@@ -27,7 +27,6 @@ def read_asc(file_nm):
     yllcorner = None
     cellsize = None
     nodata_value = -9999
-    cell_values = []
     with open(file_nm, "r") as asc_file:
         lines = asc_file.readlines()
         header_lines, body = lines[:6], lines[6:]
@@ -188,7 +187,7 @@ def wkt(segment):
     segment -- a list with 2 tuples: [(x1,y1), (x2,y2)]
     returns -- str
     """
-    return "LINESTRING({} {}, {} {});\n".format(
+    return "LINESTRING({} {}, {} {})\n".format(
         segment[0][0], segment[0][1], segment[1][0], segment[1][1]
     )
 
