@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 3
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba, Shawn Tew
+# Studentnumbers: 5967538, 5925673
 
 from loader import read_payloads
 from transformer import as_timestamp_bitlist, as_dicts

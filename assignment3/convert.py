@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 3
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba, Shawn Tew
+# Studentnumbers: 5967538, 5925673
 
 
 def read_asc(file_nm):
@@ -54,8 +54,10 @@ def read_asc(file_nm):
         for line in body:
             binary_strings = line.split(" ")
             for binary_str in binary_strings:
-                binary_list.append(int(binary_str))
-        data = [binary_list[i : i + ncols] for i in range(0, len(binary_list), ncols)]
+                binary_list.append(int(binary_str))  # [0,0,0,0,0,1,1,1,1,1,1,1,1,1,1]
+        data = [
+            binary_list[i : i + ncols] for i in range(0, len(binary_list), ncols)
+        ]  # [[0,0,0,0],[0,1,1,1],[1,1,1,1],[1,1,1,1]]
     return (nrows, ncols, xllcorner, yllcorner, cellsize, nodata_value, data)
 
 

@@ -1,6 +1,6 @@
 # GEO1000 - Assignment 3
-# Authors: Hidemichi Baba
-# Studentnumbers: 5967538
+# Authors: Hidemichi Baba, Shawn Tew
+# Studentnumbers: 5967538, 5925673
 
 
 def get_payload(raw_msg):
