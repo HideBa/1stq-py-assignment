@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Geo1000 – Python Programming for Geomatics</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Geo1000 – Python Programming for Geomatics</h1>
+</header>
+<h1 id="assignment-4-delaunay-triangulation-and-run-time-analysis">Assignment 4 – Delaunay Triangulation and Run-time analysis</h1>
+<p>Deadline: Friday, October 27, 2023, 18h00 CEST</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this assignment you are going to compare the run time of your (own) Python implementation with a (given) C++ implementation of a (far from optimal) Delaunay triangulation algorithm.</p>
+<p>This assignment is <em>preferably</em> made in groups of 2 (enroll with your group or individually in Brightspace), and your mark will count for your own final grade of the course. Helping each other is fine. However, make sure that your implementation is your <em>own</em>.</p>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>The goal of the assignment is that a student after this assignment:</p>
+<ul>
+<li>has experience with some Object-Oriented programming features in Python</li>
+<li>knows how to set up and use a C++ development environment for compiling C++ source code</li>
+<li>gets more familiar with the similarities/differences of/between Python and C++</li>
+</ul>
+<h1 id="delaunay-triangulation-in-python">Delaunay Triangulation (in Python)</h1>
+<p>As a first action, create a Python program that performs the Delaunay triangulation of a set of random points (see Figure <a href="#fig:delaunay" data-reference-type="ref" data-reference="fig:delaunay">1</a>).</p>
+<blockquote>
+<p><em>In mathematics and computational geometry, a Delaunay triangulation for a set <span class="math inline">\(P\)</span> of points in a plane is a triangulation <span class="math inline">\(DT(P)\)</span> such that no point in <span class="math inline">\(P\)</span> is inside the circumcircle of any triangle in <span class="math inline">\(DT(P)\)</span>. Delaunay triangulations maximize the minimum angle of all the angles of the triangles in the triangulation; they tend to avoid skinny triangles. The triangulation is named after Boris Delaunay for his work on this topic from 1934.</em> — <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation">wikipedia.org</a></p>
+</blockquote>
+<figure>
+<img src="delaunay.png" id="fig:delaunay" style="width:8cm" alt="" /><figcaption>Delaunay triangulation of a set of points. Note that also the circumcircles of the triangles are shown.</figcaption>
+</figure>
+<p>The steps you need to make are as follows. See for detailed requirements the docstrings of the skeleton code provided. Implement the:</p>
+<ol type="1">
+<li><p><code>distance</code> method of the Point class</p></li>
+<li><p><code>__eq__</code> method of the Point class</p></li>
+<li><p><code>covers</code> method of the Circle class. A circle covers a point if the point is located on the interior or on the border of the circle. Note that for this implementation a circle <em>also</em> covers a point if it is very close to its border (so, even if it is slightly outside). With very close we mean that the distance to the border is smaller than <span class="math inline">\(1e{-8}\)</span> units.</p></li>
+<li><p><code>area</code> / <code>perimeter</code> methods of the Circle class</p></li>
+<li><p><code>area</code> / <code>perimeter</code> methods of the Triangle class. Note, the area <span class="math inline">\(A\)</span> of a triangle can be computed based on the length of its sides (using Heron’s formula): <span class="math display">\[A = \sqrt{s(s-a)(s-b)(s-c)}\]</span> where: <span class="math inline">\(s=\frac{a+b+c}{2}\)</span> and <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span> are the lengths of the sides of the triangle.</p></li>
+<li><p><code>circumcircle</code> method of Triangle class.</p>
+<p>The coordinates of the centre of the circumcircle (<span class="math inline">\(u_x, u_y\)</span>) can be calculated based on the 3 corner points of the triangle (<span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span>) as follows:</p>
+<p><span class="math display">\[u_x = \frac{ (a_x^2 + a_y^2)(b_y - c_y) + (b_x^2 + b_y^2)(c_y - a_y) + (c_x^2 + c_y^2)(a_y - b_y) }{D}\]</span></p>
+<p><span class="math display">\[u_y = \frac{(a_x^2 + a_y^2)(c_x - b_x) + (b_x^2 + b_y^2)(a_x - c_x) + (c_x^2 + c_y^2)(b_x - a_x)}{D}\]</span></p>
+<p>with:</p>
+<p><span class="math display">\[D = 2.0\Big(a_x(b_y - c_y) + b_x(c_y - a_y) + c_x(a_y - b_y)\Big)\]</span></p></li>
+<li><p>boolean method <code>are_collinear</code> of DelaunayTriangulation class: This method takes three points (<span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>) as input, returns True when the result of the orientation test – equation below – is close to zero, False otherwise. With close to zero we mean that the absolute value of the orientation test is smaller than <span class="math inline">\(1e{-8}\)</span>.</p>
+<p><span class="math display">\[(a_x - c_x) (b_y - c_y) - (b_x - c_x) (a_y - c_y)\]</span></p></li>
+<li><p>boolean method <code>is_delaunay</code> of Delaunay Triangulation. Returns <code>True</code> when the circumcircle of the triangle contains no other points than the three points of the triangle itself. For a 3-group of points, check if the 3 points are not collinear. If they are not collinear, take the circumcircle of the triangle and check whether there are exactly three points involved in the triangulation that the circle covers (the three points of the triangle itself). If the circle covers exactly 3 points, the triangle is Delaunay, otherwise it is not.</p></li>
+<li><p><code>triangulate</code> of Delaunay Triangulation: For all possible 3-group of points that can form a triangle: Check whether this triangle conforms to Delaunay criterion. If this is the case, add the triangle to the triangles list.</p></li>
+<li><p><code>output_points</code>, <code>output_triangles</code>, <code>output_circumcircles</code> of Delaunay Triangulation. The output should look as follows:</p>
+<ul>
+<li><p>point per line as well known text string. The first line of the text file should read: <code>wkt</code></p></li>
+<li><p>triangle per line as well known text string, followed by its id, its area and its perimeter, separated by a tab character, first line should read (replace <code>&lt;tab&gt;</code> by the correct character): <code>wkt&lt;tab&gt;triangle_id&lt;tab&gt;area&lt;tab&gt;perimeter</code></p></li>
+<li><p>circle per line as well known text string, followed by the id of the triangle to which it belongs, its area and its perimeter, separated by a tab character, first line should read (replace <code>&lt;tab&gt;</code> by the correct character): <code>wkt&lt;tab&gt;triangle_id&lt;tab&gt;area&lt;tab&gt;perimeter</code></p></li>
+</ul>
+<p>To obtain identifiers, use the built-in <code>id()</code> function.</p></li>
+</ol>
+<h1 id="run-time-comparison-of-your-python-implementation-with-the-given-c-one">Run time comparison of your Python implementation with the given C++ one</h1>
+<p>Once you have finished your Python implementation, compile the given C++ code into an executable. Now compare the runtime of your Python implementation with the given C++ one.</p>
+<h2 id="preparation">Preparation</h2>
+<p>Before starting on this part of the assignment, make sure to read the online book `C++ for Python Programmers’ (go over at least Chapters 1–7) at <a href="https://runestone.academy/runestone/books/published/cpp4python/index.html" class="uri">https://runestone.academy/runestone/books/published/cpp4python/index.html</a> Also, make sure to answer all interactive questions in these Chapters (to test yourself if you’ve mastered the material).</p>
+<h2 id="c-development-environment">C++ development environment</h2>
+<p>Also, make sure you have an environment for programming with Python and C++:</p>
+<ul>
+<li>Install a C++ Compiler for your platform</li>
+<li>Install Clion</li>
+</ul>
+<p>These steps are documented in the manual for installing CLion prepared by AdHok. You find the correct manual at: <a href="https://adhok.bk.tudelft.nl/manuals" class="uri">https://adhok.bk.tudelft.nl/manuals</a> Please, let us know (e.g. in your report) if certain steps are missing or unclear (this way we can improve the manuals for next year). In case you get stuck, also the developer of CLion (JetBrains) has extensive documentation online: <a href="https://www.jetbrains.com/help/clion/installation-guide.html" class="uri">https://www.jetbrains.com/help/clion/installation-guide.html</a></p>
+<h2 id="making-your-first-steps-with-c">Making your first steps with C++</h2>
+<p>After you have installed CLion, download the C++ sample code from Brightspace, which was discussed during the lectures on C++ (Lecture 12). Use it to get familiar with your newly installed development environment: Try to compile and run (some of) the sample programs, in both debug as well as release mode (for more information about this, check: <a href="https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html#profiles" class="uri">https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html#profiles</a>). Also, intentionally introduce some errors in the code and see what happens (e.g. remove a semi-colon at the end of a statement, or put a too big number to be represented for a data type).</p>
+<h2 id="benchmark">Benchmark</h2>
+<p>Obtain time measurements of the runtime of both of your programs (Python and C++). The number of points used for the triangulation should be varied in 4 sizes: n = 100, 200, 400, 800.</p>
+<p>Think about how many times you have to run your program (to get reliable measurements).</p>
+<p>For the C++ program: Compile your C++ code both in <em>Debug</em>, as well as in <em>Release</em> mode and include both the timings in your report.</p>
+<p>To obtain the measurements and plot a chart:</p>
+<p>Write a Python script (<code>benchmark.py</code>) that invokes both the Python script as well as the C++ executables (debug + release) from the terminal / command line. Use <code>os.system</code> for that. Use it to obtain timings for the run time of your program for the requested input sizes. Note, it is worth to look at the Python module: <a href="https://docs.python.org/3/library/time.html#time.perf_counter">time.perf_counter</a>. The same script should also be able to plot the resulting measurements in a simple chart (use: matplotlib).</p>
+<h2 id="theoretical-analysis">Theoretical analysis</h2>
+<p>Instead of doing measurements on the runtime of an implementation, another option is to turn to time complexity analysis (<a href="https://en.wikipedia.org/wiki/Time_complexity" class="uri">https://en.wikipedia.org/wiki/Time_complexity</a>).</p>
+<p>Therefore, with your report you should also answer the question:</p>
+<p><em>‘In which way does the runtime of the implemented algorithm increase, when the number of points that is triangulated is enlarged?’</em></p>
+<p>Before you start, read Appendix B of Think Python: How to think like a computer scientist (the book we are using). Make sure to mention in your answer what is the worst-case time complexity of the Delaunay triangulation algorithm that you implemented. <em>Hint</em>: Check the <code>triangulate</code> method and carefully analyse how many loops are present and how many steps each loop has to make in the worst case.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th>Time Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Constant time</td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Logarithmic time</td>
+<td><span class="math inline">\(O(\log n)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Linear time</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Linearithmic time</td>
+<td><span class="math inline">\(O(n \log n)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Quadratic time</td>
+<td><span class="math inline">\(O(n^2)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cubic time</td>
+<td><span class="math inline">\(O(n^3)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Exponential time</td>
+<td><span class="math inline">\(O(a^n)\)</span> with <span class="math inline">\(a &gt; 1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Factorial time</td>
+<td><span class="math inline">\(O(n!)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Additional literature you could consult:</p>
+<ul>
+<li><a href="https://primer-computational-mathematics.github.io/book/b_coding/Fundamentals%20of%20Computer%20Science/1_Algorithmic_Complexity.html" class="uri">https://primer-computational-mathematics.github.io/book/b_coding/Fundamentals%20of%20Computer%20Science/1_Algorithmic_Complexity.html</a></li>
+<li><a href="https://tudelft.on.worldcat.org/oclc/869832329?databaseList=1697,2572,638" class="uri">https://tudelft.on.worldcat.org/oclc/869832329?databaseList=1697,2572,638</a> – GIS fundamentals, 2nd edition by Steve Wise (chapter 6) – should be accessible from within the TU Delft network using your NetID.</li>
+</ul>
+<h1 id="what-to-hand-in">What to hand in?</h1>
+<p>Hand in on Brightspace, a zip archive (without additional folder structure) that contains:</p>
+<ul>
+<li>your modified Python code (<code>geometry.py</code>, <code>delaunay.py</code>)</li>
+<li>the script you used for running and timing your Python and C++ code (<code>benchmark.py</code>)</li>
+<li>a report (as <strong>PDF file</strong>, named <code>groupN.pdf</code>, where <code>N</code> is replaced by your group number) .</li>
+</ul>
+<p>Make sure that each Python file that is handed in, starts with the following comment (augment <code>Authors</code> and <code>Studentnumbers</code> with your own names and numbers):</p>
+<pre><code># GEO1000 - Assignment 4
+# Authors:
+# Studentnumbers:</code></pre>
+<p>Your report (PDF) contains:</p>
+<ul>
+<li><p>Your name(s) and student number(s)</p></li>
+<li><p>The number of words your report uses.</p></li>
+<li><p>A paragraph (max. 200 words) explaining how the Python and C++ programs are different? How is the information in both programs represented: Which (user defined) data types do the programs use to represent the data for the triangulation? Do they have the same methods and functions, or are there differences?</p></li>
+<li><p>Timings for Python, C++ Debug and C++ Release, in a table and visualised in a chart (x-axis: instance size/y-axis: run time). Use matplotlib to produce the chart.</p></li>
+<li><p>A paragraph (max. 200 words) explaining your analysis of the time complexity of the implemented Delaunay triangulation algorithm.</p></li>
+<li><p>A paragraph reflection on how you went about solving the task (max. 200 words). Which steps did you take? How did you measure the runtime? Did you get stuck? Which sources did you consult when you got stuck? Did you expect the results you obtained? Etc.</p></li>
+<li><p>A screenshot of QGIS, where you have loaded the CSV files your Python code did produce for triangulating 100 input points (with points, triangles and circumcircles <em>nicely</em> visualized).</p></li>
+</ul>
+<h2 id="grading">Grading</h2>
+<p>You can get 100 points for this assignment. The aspects that we will look at are: Your Python code (65 points) and your report (35 points).</p>
+<p>Note that if you submit your assignment after the deadline, some points will be removed. For the first day that a submission is late, 10 points will be removed before marking. For every day after that, another 20 points will be removed.</p>
+<h1 id="appendix">Appendix</h1>
+<h2 id="c-reference">C++ reference</h2>
+<p>The go to website for C++: <a href="https://en.cppreference.com/w/" class="uri">https://en.cppreference.com/w/</a> On Brightspace you can find two references to good C++ books with (much) more on the C++ programming language.</p>
+<h2 id="cmake">CMake</h2>
+<p>CMake helps defining the steps for building software (i.e. the steps the compiler needs to take, while compiling your C++ source code). For this, a text file named CMakeLists.txt has to exist within your project (the C++ code from Brightspace has it). You can read more about it at: <a href="https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html" class="uri">https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html</a></p>
+<h2 id="skeleton">Skeleton</h2>
+<p>Start your Python implementation from the following skeleton:</p>
+<h3 id="geometry.py">geometry.py</h3>
+<div class="sourceCode" id="cb2" data-language="Python"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co"># GEO1000 - Assignment 4</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co"># Authors:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="co"># Student numbers:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="co"># no other imports allowed than given</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="im">import</span> math</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="kw">class</span> Point:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Point, with x- and y-coordinate&quot;&quot;&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, x, y):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Constructor</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a><span class="co">        :param x: x-coordinate of the Point</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a><span class="co">        :type x: number</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a><span class="co">        :param y: y-coordinate of the Point</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a><span class="co">        :type y: number</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a>        <span class="va">self</span>.x <span class="op">=</span> <span class="bu">float</span>(x)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a>        <span class="va">self</span>.y <span class="op">=</span> <span class="bu">float</span>(y)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;string method -- for print function&quot;&quot;&quot;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;point(</span><span class="sc">{0}</span><span class="st">, </span><span class="sc">{1}</span><span class="st">)&quot;</span>.<span class="bu">format</span>(<span class="va">self</span>.x, <span class="va">self</span>.y)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true"></a>    <span class="kw">def</span> as_wkt(<span class="va">self</span>):</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Well Known Text of this point</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;POINT(</span><span class="sc">{}</span><span class="st"> </span><span class="sc">{}</span><span class="st">)&quot;</span>.<span class="bu">format</span>(<span class="va">self</span>.x, <span class="va">self</span>.y)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a>    <span class="kw">def</span> distance(<span class="va">self</span>, other):</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns distance to the *other* point </span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true"></a><span class="co">        (assuming Euclidean geometry)</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true"></a><span class="co">        :param other: the point to compute the distance to</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true"></a><span class="co">        :type other: Point</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__hash__</span>(<span class="va">self</span>):</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Allows a Point instance to be used </span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true"></a><span class="co">        (as key) in a dictionary or in a set (i.e. hashed collections).&quot;&quot;&quot;</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true"></a>        <span class="cf">return</span> <span class="bu">hash</span>((<span class="va">self</span>.x, <span class="va">self</span>.y))</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__eq__</span>(<span class="va">self</span>, other):</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Compare Point instances for equivalence </span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true"></a><span class="co">        (this object instance == other instance?).</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true"></a><span class="co">        :param other: the point to compare with</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true"></a><span class="co">        :type other: Point</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true"></a><span class="co">        Returns True/False</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true"></a><span class="kw">class</span> Circle:</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Circle, with center and radius&quot;&quot;&quot;</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, center, radius):</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Constructor</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true"></a><span class="co">        :param center: center of the circle</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true"></a><span class="co">        :type center: Point</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true"></a><span class="co">        :param radius: radius of the circle</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true"></a><span class="co">        :type radius: float</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true"></a>        <span class="va">self</span>.center <span class="op">=</span> center</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true"></a>        <span class="va">self</span>.radius <span class="op">=</span> <span class="bu">float</span>(radius)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;string method -- for print function&quot;&quot;&quot;</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;circle&lt;c:</span><span class="sc">{0}</span><span class="st">, r:</span><span class="sc">{1}</span><span class="st">&gt;&quot;</span>.<span class="bu">format</span>(<span class="va">self</span>.center, <span class="va">self</span>.radius)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true"></a>    <span class="kw">def</span> area(<span class="va">self</span>):</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns the area of the circle&quot;&quot;&quot;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true"></a>    <span class="kw">def</span> perimeter(<span class="va">self</span>):</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns the perimeter of the circle&quot;&quot;&quot;</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true"></a></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true"></a>    <span class="kw">def</span> covers(<span class="va">self</span>, pt):</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns True when the circle covers point *pt*, </span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true"></a><span class="co">        False otherwise</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true"></a><span class="co">        Note that we consider points that are near to the boundary of the </span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true"></a><span class="co">        circle also to be covered by the circle (arbitrary epsilon to use: 1e-8).</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true"></a>    <span class="kw">def</span> as_wkt(<span class="va">self</span>):</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns WKT str, discretizing the circle into straight</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true"></a><span class="co">        line segments</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true"></a>        N <span class="op">=</span> <span class="dv">400</span>  <span class="co"># the number of segments</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true"></a>        step <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> math.pi <span class="op">/</span> N</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true"></a>        pts <span class="op">=</span> []</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N):</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true"></a>            pts.append(</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true"></a>                Point(</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true"></a>                    <span class="va">self</span>.center.x <span class="op">+</span> math.cos(i <span class="op">*</span> step) <span class="op">*</span> <span class="va">self</span>.radius,</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true"></a>                    <span class="va">self</span>.center.y <span class="op">+</span> math.sin(i <span class="op">*</span> step) <span class="op">*</span> <span class="va">self</span>.radius,</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true"></a>                )</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true"></a>            )</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true"></a>        pts.append(pts[<span class="dv">0</span>])</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true"></a>        coordinates <span class="op">=</span> [<span class="st">&quot;</span><span class="sc">{0}</span><span class="st"> </span><span class="sc">{1}</span><span class="st">&quot;</span>.<span class="bu">format</span>(pt.x, pt.y) <span class="cf">for</span> pt <span class="kw">in</span> pts]</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true"></a>        coordinates <span class="op">=</span> <span class="st">&quot;, &quot;</span>.join(coordinates)</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;POLYGON((</span><span class="sc">{0}</span><span class="st">))&quot;</span>.<span class="bu">format</span>(coordinates)</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true"></a></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true"></a></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true"></a><span class="kw">class</span> Triangle:</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, p0, p1, p2):</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Constructor</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true"></a></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true"></a><span class="co">        Arguments: p0, p1, p2 -- Point instances</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true"></a>        <span class="va">self</span>.p0, <span class="va">self</span>.p1, <span class="va">self</span>.p2 <span class="op">=</span> p0, p1, p2</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true"></a></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;triangle&lt;p0:</span><span class="sc">{0}</span><span class="st">, p1:</span><span class="sc">{1}</span><span class="st">, p2:</span><span class="sc">{2}</span><span class="st">&gt;&quot;</span>.<span class="bu">format</span>(<span class="va">self</span>.p0, <span class="va">self</span>.p1, <span class="va">self</span>.p2)</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true"></a></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true"></a>    <span class="kw">def</span> as_wkt(<span class="va">self</span>):</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;String representation</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true"></a>        points <span class="op">=</span> [</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true"></a>            <span class="st">&quot;</span><span class="sc">{0.x}</span><span class="st"> </span><span class="sc">{0.y}</span><span class="st">&quot;</span>.<span class="bu">format</span>(pt) <span class="cf">for</span> pt <span class="kw">in</span> (<span class="va">self</span>.p0, <span class="va">self</span>.p1, <span class="va">self</span>.p2, <span class="va">self</span>.p0)</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true"></a>        ]</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true"></a>        <span class="cf">return</span> <span class="st">&quot;POLYGON((</span><span class="sc">{0}</span><span class="st">))&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;, &quot;</span>.join(points))</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true"></a></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true"></a>    <span class="kw">def</span> circumcircle(<span class="va">self</span>):</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns Circle instance that intersects the 3 points of the triangle.</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true"></a></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true"></a><span class="co">        Note, the assignment sheet contains a formula for calculating the </span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true"></a><span class="co">        center of this Circle.</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true"></a></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true"></a>    <span class="kw">def</span> area(<span class="va">self</span>):</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Area of this triangle, using Heron&#39;s formula.</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true"></a><span class="co">        </span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true"></a><span class="co">        In case you run into a negative value for taking the square root </span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true"></a><span class="co">        (which is not possible), and one of the terms is very close to zero,</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true"></a><span class="co">        it is okay to return 0.0 for the area.</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true"></a></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true"></a>    <span class="kw">def</span> perimeter(<span class="va">self</span>):</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Perimeter of this triangle (float)&quot;&quot;&quot;</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true"></a></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true"></a>    <span class="kw">def</span> covers(<span class="va">self</span>, pt):</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Returns True when the triangle covers point *pt*, False otherwise</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true"></a></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true"></a><span class="co">        The implementation of this method should use the fact that a triangle</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true"></a><span class="co">        covers a point, iff the summed area of the 3 triangles</span></span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true"></a><span class="co">        formed by (pt0, pt1, pt) and (pt1, pt2, pt) and (pt2, pt0, pt)</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true"></a><span class="co">        is approximately equal (arbitrary epsilon to use: 1e-8) to the area</span></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true"></a><span class="co">        of this triangle formed by its points (pt0, pt1, pt2).</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true"></a></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true"></a></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true"></a><span class="kw">def</span> _test():</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true"></a>    <span class="co"># If you want, you can write tests in this function</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true"></a>    <span class="cf">pass</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true"></a></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true"></a></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true"></a>    _test()</span></code></pre></div>
+<h3 id="delaunay.py">delaunay.py</h3>
+<div class="sourceCode" id="cb3" data-language="Python"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="co"># GEO1000 - Assignment 4</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="co"># Authors:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co"># Student numbers:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co"># no other imports allowed than given</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="im">import</span> math, sys</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="im">from</span> geometry <span class="im">import</span> Point, Circle, Triangle</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="kw">class</span> DelaunayTriangulation:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, points):</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>        <span class="va">self</span>.triangles <span class="op">=</span> []</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a>        <span class="va">self</span>.points <span class="op">=</span> points</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>    <span class="kw">def</span> triangulate(<span class="va">self</span>):</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Triangulates the given set of points.</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="co">        This method takes the set of points to be triangulated </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="co">        (with at least 3 points) and for each 3-group of points instantiates </span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="co">        a triangle and checks whether the triangle conforms to Delaunay </span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="co">        criterion. If so, the triangle is added to the triangle list.</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a><span class="co">        To determine the 3-group of points, the group3 function is used.</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a><span class="co">        Returns None</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a>        <span class="co"># pre-condition: we should have at least 3 points</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a>        <span class="cf">assert</span> <span class="bu">len</span>(<span class="va">self</span>.points) <span class="op">&gt;</span> <span class="dv">2</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a>    <span class="kw">def</span> is_delaunay(<span class="va">self</span>, tri):</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Does a triangle *tri* conform to the Delaunay criterion?</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true"></a><span class="co">        Algorithm:</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true"></a><span class="co">        Are 3 points of the triangle collinear?</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a><span class="co">            No:</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true"></a><span class="co">                Get circumcircle</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true"></a><span class="co">                Count number of points inside circumcircle</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true"></a><span class="co">                if number of points inside == 3:</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a><span class="co">                    Delaunay</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true"></a><span class="co">                else:</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true"></a><span class="co">                    not Delaunay</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true"></a><span class="co">            Yes:</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true"></a><span class="co">                not Delaunay</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true"></a><span class="co">        Arguments:</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true"></a><span class="co">            tri -- Triangle instance</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true"></a><span class="co">        Returns:</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true"></a><span class="co">            True/False</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true"></a>    <span class="kw">def</span> are_collinear(<span class="va">self</span>, pa, pb, pc):</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Orientation test to determine whether 3 points are collinear</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true"></a><span class="co">        (on straight line).</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true"></a><span class="co">        Note that we consider points that are nearly collinear also to be on </span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true"></a><span class="co">        a straight line (arbitrary epsilon to use: 1e-8).</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true"></a><span class="co">        Returns True / False</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true"></a>    <span class="kw">def</span> output_points(<span class="va">self</span>, open_file_obj):</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Outputs the points of the triangulation to an open file.</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true"></a></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true"></a>    <span class="kw">def</span> output_triangles(<span class="va">self</span>, open_file_obj):</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Outputs the triangles of the triangulation to an open file.</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true"></a>    <span class="kw">def</span> output_circumcircles(<span class="va">self</span>, open_file_obj):</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true"></a>        <span class="co">&quot;&quot;&quot;Outputs the circumcircles of the triangles of the triangulation</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true"></a><span class="co">        to an open file</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true"></a>        <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true"></a><span class="kw">def</span> group3(N):</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Returns generator with 3-tuples with indices to form 3-groups</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true"></a><span class="co">    of a list of length N.</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true"></a></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true"></a><span class="co">    Total number of tuples that is generated: N! / (3! * (N-3)!)</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true"></a></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true"></a><span class="co">    For N = 3: [(0, 1, 2)]</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true"></a><span class="co">    For N = 4: [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true"></a><span class="co">    For N = 5: [(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 2, 3), </span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true"></a><span class="co">                (0, 2, 4), (0, 3, 4), (1, 2, 3), (1, 2, 4), </span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true"></a><span class="co">                (1, 3, 4), (2, 3, 4)]</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true"></a><span class="co">    Example use:</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true"></a><span class="co">        &gt;&gt;&gt; for item in group3(3):</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true"></a><span class="co">        ...     print(item)</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true"></a><span class="co">        ... </span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true"></a><span class="co">        (0, 1, 2)</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true"></a>    <span class="co"># See for more information about generators for example:</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true"></a>    <span class="co"># http://web.archive.org/https://jeffknupp.com/blog/2013/04/07/improve-your-python-yield-and-generators-explained/</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N <span class="op">-</span> <span class="dv">2</span>):</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, N <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true"></a>            <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(j <span class="op">+</span> <span class="dv">1</span>, N):</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true"></a>                <span class="cf">yield</span> (i, j, k)</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true"></a></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true"></a></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true"></a><span class="kw">def</span> make_random_points(n):</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Makes n points distributed randomly in x,y between [0,1000]</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true"></a></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true"></a><span class="co">    Note, no duplicate points will be created, but might result in slightly </span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true"></a><span class="co">    less than the n number of points requested.</span></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true"></a>    <span class="im">import</span> random</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true"></a></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true"></a>    <span class="co"># seed the random generator, so we still get a random set of points,</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true"></a>    <span class="co"># but each time the same set of randomized ones</span></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true"></a>    random.seed(<span class="dv">2023</span>)</span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true"></a>    pts <span class="op">=</span> <span class="bu">list</span>(</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true"></a>        <span class="bu">set</span>([Point(random.randint(<span class="dv">0</span>, <span class="dv">1000</span>), random.randint(<span class="dv">0</span>, <span class="dv">1000</span>)) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)])</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true"></a>    )</span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true"></a>    <span class="cf">return</span> pts</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true"></a></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true"></a></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true"></a><span class="kw">def</span> main(n):</span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Perform triangulation of n points and write the resulting geometries</span></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true"></a><span class="co">    to text files, where the geometry is stored as well-known text strings.</span></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true"></a>    pts <span class="op">=</span> make_random_points(n)</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true"></a>    dt <span class="op">=</span> DelaunayTriangulation(pts)</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true"></a>    dt.triangulate()</span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true"></a>    <span class="co"># using the with statement, we do not need to close explicitly the file</span></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;points.wkt&quot;</span>, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> fh:</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true"></a>        dt.output_points(fh)</span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;triangles.wkt&quot;</span>, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> fh:</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true"></a>        dt.output_triangles(fh)</span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;circumcircles.wkt&quot;</span>, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> fh:</span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true"></a>        dt.output_circumcircles(fh)</span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true"></a></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true"></a></span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true"></a><span class="kw">def</span> print_error():</span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true"></a>    <span class="co">&quot;&quot;&quot;Prints an eror when a script parameter is missing on the command line&quot;&quot;&quot;</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">&quot;ERROR: Call this script with an integer as script parameter&quot;</span>)</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">&quot;to set the number of points for the triangulation.&quot;</span>)</span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Example: $ python </span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> 100&quot;</span>)</span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true"></a></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true"></a></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true"></a><span class="kw">def</span> _test():</span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true"></a>    <span class="co"># If you want, you can write tests in this function</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true"></a>    <span class="cf">pass</span>  <span class="co"># Your implementation here</span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true"></a></span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true"></a></span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">&quot;This is the name of the Python script:&quot;</span>, sys.argv[<span class="dv">0</span>])</span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">&quot;Number of arguments:&quot;</span>, <span class="bu">len</span>(sys.argv))</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">&quot;The arguments are:&quot;</span> , <span class="bu">str</span>(sys.argv))</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true"></a>    <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true"></a>        print_error()</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true"></a>    <span class="cf">else</span>:</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true"></a>        <span class="cf">try</span>:</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true"></a>            point_count <span class="op">=</span> <span class="bu">int</span>(sys.argv[<span class="dv">1</span>])</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true"></a>            <span class="bu">print</span>(<span class="st">&quot;Running triangulation...&quot;</span>)</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true"></a>            main(point_count)</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true"></a>            <span class="bu">print</span>(<span class="st">&quot;done.&quot;</span>)</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true"></a>            print_error()</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true"></a>            <span class="cf">raise</span></span></code></pre></div>
+<h3 id="benchmark.py">benchmark.py</h3>
+<div class="sourceCode" id="cb4" data-language="Python"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co"># GEO1000 - Assignment 4</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co"># Authors:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co"># Student numbers:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co"># feel free to import modules you need</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co"># and make functions / classes as you see fit</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="kw">def</span> main():</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>    <span class="cf">pass</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>    main()</span></code></pre></div>
+</body>
+</html>
