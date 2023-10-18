@@ -9,6 +9,7 @@ packages = [{include = "1stq_py_assignment"}]
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
 numpy = "^1.26.0"
+psutil = "^5.9.6"
 
 
 [tool.poetry.group.dev.dependencies]

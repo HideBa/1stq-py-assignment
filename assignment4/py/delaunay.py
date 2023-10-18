@@ -101,7 +101,7 @@ class DelaunayTriangulation:
             open_file_obj.write(
                 "{wkt}\t{id}\t{area}\t{perimeter}\n".format(
                     wkt=tri.as_wkt(),
-                    id=hash(tri),
+                    id=id(tri),
                     area=tri.area(),
                     perimeter=tri.perimeter(),
                 )
@@ -117,7 +117,7 @@ class DelaunayTriangulation:
             open_file_obj.write(
                 "{wkt}\t{id}\t{area}\t{perimeter}\n".format(
                     wkt=circle.as_wkt(),
-                    id=hash(tri),
+                    id=id(tri),
                     area=circle.area(),
                     perimeter=circle.perimeter(),
                 )
