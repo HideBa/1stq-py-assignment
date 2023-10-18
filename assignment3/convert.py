@@ -123,8 +123,8 @@ def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
                 continue
             elif c_index == 1 or c_index == 14:
                 segment = [
-                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                     rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                 ]
             elif c_index == 2 or c_index == 13:
                 segment = [
@@ -143,14 +143,10 @@ def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
                 ]
             elif c_index == 5:
                 segment = [
-                    [
-                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
-                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
-                    ],
-                    [
-                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
-                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
-                    ],
+                    rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                 ]
             elif c_index == 6 or c_index == 9:
                 segment = [
@@ -164,14 +160,10 @@ def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
                 ]
             elif c_index == 10:
                 segment = [
-                    [
-                        rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
-                        rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
-                    ],
-                    [
-                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
-                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
-                    ],
+                    rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                 ]
             segments.append(segment)
     return segments
@@ -221,12 +213,7 @@ def convert(file_nm_in, file_nm_out):
 
 def main():
     """Starting point of the program, asks user for the name of the input file."""
-    # convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
-    convert("./assignment3/snail.asc", "./assignment3/snail.wkt")
-    convert("./assignment3/giraffe.asc", "./assignment3/giraffe.wkt")
-    convert("./assignment3/holland.asc", "./assignment3/holland.wkt")
-    convert("./assignment3/simple_eol.asc", "./assignment3/simple_eol.wkt")
-    convert("./assignment3/simple_noeol.asc", "./assignment3/simple_noeol.wkt")
+    convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
     print("Done, result stored to out.wkt")
 
 
