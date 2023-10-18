@@ -80,14 +80,13 @@ def rowcol_to_xy_center(cur_row, cur_col, rows, cols, xll, yll, size):
             x -- float
             y -- float
     """
-    if cur_row <= 0 or cur_col <= 0:
-        raise Exception("row and col must be greater than 0")
+    if cur_row < 0 or cur_col < 0:
+        raise Exception("row and col must be greater than or equal0")
     if cur_row > rows or cur_col > cols:
         raise Exception("row and col must be less than rows and cols")
 
-    nth_row_from_bottom = rows - cur_row
-    x = xll + size * cur_col
-    y = yll + size * nth_row_from_bottom
+    x = xll + size * (cur_col + 0.5)
+    y = yll + size * (rows - cur_row - 0.5)
     return (x, y)
 
 
@@ -107,76 +106,75 @@ def marching_squares(rows, cols, xll, yll, size, nodataval, raster):
       list of segments: [[(x1,y1), (x2,y2)], ..., [(xm,ym), (xn,yn)]]
 
     """
-    coordinates = []
-    for i in range(1, rows):  # e.g. 3x3 has 2 rows of v-cells
-        for j in range(1, cols):
-            bottom_left = 0 if raster[i][j - 1] == nodataval else raster[i][j - 1]
-            bottom_right = 0 if raster[i][j] == nodataval else raster[i][j]
-            top_right = 0 if raster[i - 1][j] == nodataval else raster[i - 1][j]
-            top_left = 0 if raster[i - 1][j - 1] == nodataval else raster[i - 1][j - 1]
-            cell_index = (
-                bottom_left * 1 + bottom_right * 2 + top_right * 4 + top_left * 8
+    segments = []
+    for i in range(0, rows - 1):  # e.g. 3x3 has 2 rows of v-cells
+        for j in range(0, cols - 1):
+            bottom_left = 0 if raster[i + 1][j] == nodataval else raster[i + 1][j]
+            bottom_right = (
+                0 if raster[i + 1][j + 1] == nodataval else raster[i + 1][j + 1]
             )
-            cell_center = rowcol_to_xy_center(i, j, rows, cols, xll, yll, size)
+            top_right = 0 if raster[i][j + 1] == nodataval else raster[i][j + 1]
+            top_left = 0 if raster[i][j] == nodataval else raster[i][j]
 
-            half_size = size / 2
-            coordinate = []
-            if cell_index == 0 or cell_index == 15:
+            c_index = bottom_left * 1 + bottom_right * 2 + top_right * 4 + top_left * 8
+
+            segment = []
+            if c_index == 0 or c_index == 15:
                 continue
-            elif cell_index == 1 or cell_index == 14:
-                coordinate = [
-                    (cell_center[0], cell_center[1] - half_size),
-                    (cell_center[0] - half_size, cell_center[1]),
+            elif c_index == 1 or c_index == 14:
+                segment = [
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 2 or cell_index == 13:
-                coordinate = [
-                    (cell_center[0], cell_center[1] - half_size),
-                    (cell_center[0] + half_size, cell_center[1]),
+            elif c_index == 2 or c_index == 13:
+                segment = [
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 3 or cell_index == 12:
-                coordinate = [
-                    (cell_center[0] - half_size, cell_center[1]),
-                    (cell_center[0] + half_size, cell_center[1]),
+            elif c_index == 3 or c_index == 12:
+                segment = [
+                    rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 4 or cell_index == 11:
-                coordinate = [
-                    (cell_center[0] + half_size, cell_center[1]),
-                    (cell_center[0], cell_center[1] + half_size),
+            elif c_index == 4 or c_index == 11:
+                segment = [
+                    rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 5:
-                coordinate = [
+            elif c_index == 5:
+                segment = [
                     [
-                        (cell_center[0], cell_center[1] - half_size),
-                        (cell_center[0] + half_size, cell_center[1]),
+                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
                     ],
                     [
-                        (cell_center[0] - half_size, cell_center[1]),
-                        (cell_center[0], cell_center[1] + half_size),
+                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
+                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
                     ],
                 ]
-            elif cell_index == 6 or cell_index == 9:
-                coordinate = [
-                    (cell_center[0], cell_center[1] - half_size),
-                    (cell_center[0], cell_center[1] + half_size),
+            elif c_index == 6 or c_index == 9:
+                segment = [
+                    rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 7 or cell_index == 8:
-                coordinate = [
-                    (cell_center[0] - half_size, cell_center[1]),
-                    (cell_center[0], cell_center[1] + half_size),
+            elif c_index == 7 or c_index == 8:
+                segment = [
+                    rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                    rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
                 ]
-            elif cell_index == 10:
-                coordinate = [
+            elif c_index == 10:
+                segment = [
                     [
-                        (cell_center[0], cell_center[1] - half_size),
-                        (cell_center[0] - half_size, cell_center[1]),
+                        rowcol_to_xy_center(i + 0.5, j, rows, cols, xll, yll, size),
+                        rowcol_to_xy_center(i + 1, j + 0.5, rows, cols, xll, yll, size),
                     ],
                     [
-                        (cell_center[0] + half_size, cell_center[1]),
-                        (cell_center[0], cell_center[1] + half_size),
+                        rowcol_to_xy_center(i, j + 0.5, rows, cols, xll, yll, size),
+                        rowcol_to_xy_center(i + 0.5, j + 1, rows, cols, xll, yll, size),
                     ],
                 ]
-            coordinates.append(coordinate)
-    return coordinates
+            segments.append(segment)
+    return segments
 
 
 def wkt(segment):
@@ -223,7 +221,12 @@ def convert(file_nm_in, file_nm_out):
 
 def main():
     """Starting point of the program, asks user for the name of the input file."""
-    convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
+    # convert(input("Which file to convert? >>> "), input("Name for output file?  >>> "))
+    convert("./assignment3/snail.asc", "./assignment3/snail.wkt")
+    convert("./assignment3/giraffe.asc", "./assignment3/giraffe.wkt")
+    convert("./assignment3/holland.asc", "./assignment3/holland.wkt")
+    convert("./assignment3/simple_eol.asc", "./assignment3/simple_eol.wkt")
+    convert("./assignment3/simple_noeol.asc", "./assignment3/simple_noeol.wkt")
     print("Done, result stored to out.wkt")
 
 
