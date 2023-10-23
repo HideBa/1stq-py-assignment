@@ -84,10 +84,7 @@ class DelaunayTriangulation:
         bx, by = pb.x, pb.y
         cx, cy = pc.x, pc.y
         result = (ax - cx) * (by - cy) - (bx - cx) * (ay - cy)
-        if result < 1e-8:
-            return True
-        else:
-            return False
+        return abs(result) < 1e-8
 
     def output_points(self, open_file_obj):
         """Outputs the points of the triangulation to an open file."""
@@ -208,7 +205,7 @@ if __name__ == "__main__":
         try:
             point_count = int(sys.argv[1])
             print("Running triangulation...")
-            # TODO: remove me
+            # TODO: remove me after perfomance testing
             cProfile.run("main(point_count)", sort="cumtime", filename="profile")
             # main(point_count)
             print("done.")

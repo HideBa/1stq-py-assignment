@@ -89,8 +89,7 @@ class Circle:
         Note that we consider points that are near to the boundary of the
         circle also to be covered by the circle (arbitrary epsilon to use: 1e-8).
         """
-        distance = math.sqrt((pt.x - self.center.x) ** 2 + (pt.y - self.center.y) ** 2)
-        return distance <= self.radius + 1e-8
+        return self.center.distance(pt) <= self.radius + 1e-8
 
     def as_wkt(self):
         """Returns WKT str, discretizing the circle into straight
@@ -163,11 +162,11 @@ class Triangle:
         (which is not possible), and one of the terms is very close to zero,
         it is okay to return 0.0 for the area.
         """
-        node_0_1 = self.p0.distance(self.p1)
-        node_1_2 = self.p1.distance(self.p2)
-        node_2_0 = self.p2.distance(self.p0)
+        edge_0_1 = self.p0.distance(self.p1)
+        edge_1_2 = self.p1.distance(self.p2)
+        edge_2_0 = self.p2.distance(self.p0)
         s = self.perimeter() / 2
-        area = math.sqrt(s * (s - node_0_1) * (s - node_1_2) * (s - node_2_0))
+        area = math.sqrt(s * (s - edge_0_1) * (s - edge_1_2) * (s - edge_2_0))
         if isinstance(area, complex):
             area = 0.0
         return area
@@ -189,7 +188,6 @@ class Triangle:
         is approximately equal (arbitrary epsilon to use: 1e-8) to the area
         of this triangle formed by its points (pt0, pt1, pt2).
         """
-        self.area()
         tri1 = Triangle(self.p0, self.p1, pt)
         tri2 = Triangle(self.p1, self.p2, pt)
         tri3 = Triangle(self.p2, self.p0, pt)
