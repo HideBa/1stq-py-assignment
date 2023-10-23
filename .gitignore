@@ -168,3 +168,5 @@ cython_debug/
 compare/**
 **/cpp/**.dSYM/**
 *.exe
+*.png
+*.qgz
