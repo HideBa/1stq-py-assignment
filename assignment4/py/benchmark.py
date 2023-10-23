@@ -7,32 +7,33 @@ import time
 from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
-
 import psutil
 
 python_command = "python assignment4/py/delaunay.py"
 cpp_debug_command = "./assignment4/cpp/debug.exe"
 cpp_release_command = "./assignment4/cpp/release.exe"
 
-# POINTS_NUMS = [100]
-POINTS_NUMS = [100, 200, 400, 800]
+POINTS_NUMS = [200]
+# POINTS_NUMS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+# POINTS_NUMS = [100, 200, 400, 800]
 
 
 def main():
-    ITER_NUM = 10
+    ITER_NUM = 2
+    py_ave_time_list = []
     for points_num in POINTS_NUMS:
         print(f"points num: {points_num}")
-        [py_time_stats, py_cpu_stats, py_ram_stats] = benchmark(
+        py_time_stats = benchmark(
             "{0} {1}".format(python_command, points_num), ITER_NUM
         )
-        [cpp_debug_time_stats, cpp_debug_cpu_stats, cpp_debug_ram_stats] = benchmark(
+        py_ave_time_list.append(py_time_stats)
+        cpp_debug_time_stats = benchmark(
             "{0} {1}".format(cpp_debug_command, points_num), ITER_NUM
         )
-        [
-            cpp_release_time_stats,
-            cpp_release_cpu_stats,
-            cpp_release_ram_stats,
-        ] = benchmark("{0} {1}".format(cpp_release_command, points_num), ITER_NUM)
+
+        cpp_release_time_stats = benchmark(
+            "{0} {1}".format(cpp_release_command, points_num), ITER_NUM
+        )
 
         plot_benchmarks(
             [py_time_stats, cpp_debug_time_stats, cpp_release_time_stats],
@@ -40,12 +41,13 @@ def main():
             f"Time of execution ({points_num}points, {ITER_NUM} iterations)",
             f"{points_num}points_{ITER_NUM}iter",
         )
+    plot_time_vs_points(
+        POINTS_NUMS, py_ave_time_list, ["Python"], "Time vs points", "time_vs_points"
+    )
 
 
 def benchmark(command, iter_num=100):
     time_diffs = []
-    cpu_usages = []
-    ram_usages = []
     for _ in range(iter_num):
         start_time = time.perf_counter()
         os.system(command)
@@ -54,24 +56,7 @@ def benchmark(command, iter_num=100):
         time_diff = end_time - start_time
         time_diffs.append(time_diff)
 
-        # start_time = time.perf_counter()
-        # initial_cpu = psutil.cpu_percent(interval=1)
-        # initial_ram = psutil.Process().memory_info().rss / 1024**2  # in MB
-        # os.system(command)
-
-        # end_time = time.perf_counter()
-        # final_cpu = psutil.cpu_percent(interval=1)
-        # final_ram = psutil.Process().memory_info().rss / 1024**2  # in MB
-
-        # # Calculate the difference
-        # time_diff = end_time - start_time
-        # cpu_usage = final_cpu - initial_cpu
-        # ram_usage = final_ram - initial_ram
-        # time_diffs.append(time_diff)
-        # cpu_usages.append(cpu_usage)
-        # ram_usages.append(ram_usage)
-
-    return (Stats(time_diffs), Stats(cpu_usages), Stats(ram_usages))
+    return Stats(time_diffs)
 
 
 class Stats:
@@ -134,8 +119,22 @@ def plot_benchmarks(
     plt.savefig(f"{filename}.png", format="png", dpi=300, bbox_inches="tight")
 
 
-def run_python():
-    pass
+def plot_time_vs_points(
+    point_nums: List[int],
+    time_stats: List[Stats],
+    langs: List[str],
+    title: str,
+    filename: str,
+):
+    plt.figure()
+    plt.plot(point_nums, [s.ave() for s in time_stats], label=langs[0])
+
+    plt.title(title)
+    plt.xlabel("points num")
+    plt.ylabel("time (s)")
+    plt.legend()
+
+    plt.savefig(f"{filename}.png", format="png", dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":

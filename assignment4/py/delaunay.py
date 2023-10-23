@@ -5,6 +5,7 @@
 # no other imports allowed than given
 import math, sys
 from geometry import Point, Circle, Triangle
+import cProfile
 
 
 class DelaunayTriangulation:
@@ -177,11 +178,11 @@ def main(n):
     dt = DelaunayTriangulation(pts)
     dt.triangulate()
     # using the with statement, we do not need to close explicitly the file
-    with open("./assignment4/py/points.wkt", "w") as fh:
+    with open(f"./assignment4/py/points_{n}.wkt", "w") as fh:
         dt.output_points(fh)
-    with open("./assignment4/py/triangles.wkt", "w") as fh:
+    with open(f"./assignment4/py/triangles_{n}.wkt", "w") as fh:
         dt.output_triangles(fh)
-    with open("./assignment4/py/circumcircles.wkt", "w") as fh:
+    with open(f"./assignment4/py/circumcircles_{n}.wkt", "w") as fh:
         dt.output_circumcircles(fh)
 
 
@@ -207,7 +208,9 @@ if __name__ == "__main__":
         try:
             point_count = int(sys.argv[1])
             print("Running triangulation...")
-            main(point_count)
+            # TODO: remove me
+            cProfile.run("main(point_count)", sort="cumtime", filename="profile")
+            # main(point_count)
             print("done.")
         except ValueError:
             print_error()
