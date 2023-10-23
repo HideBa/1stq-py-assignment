@@ -1,17 +1,13 @@
+.PHONY: build-d build-r run-d run-r
 
-.PHONY gendebug
-gendebug:
-	clang++ -g -O0 -o debug_exe triangulate.cpp
+build-d:
+	clang++ -std=c++11 -g -O0 -o debug.exe triangulate.cpp
 
+build-r:
+	clang++ -std=c++11 -O3 -o release.exe triangulate.cpp
 
-.PHONY genrelease
-genrelease:
-	clang++ -O3 -o release_exe triangulate.cpp
-
-.PHONY run-d
 run-d:
 	./debug_exe
 
-.PHONY run-r
 run-r:
 	./release_exe

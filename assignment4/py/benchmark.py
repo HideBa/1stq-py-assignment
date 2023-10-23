@@ -4,55 +4,42 @@
 import os
 import statistics
 import time
-from typing import List, Tuple
+from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
 
 import psutil
 
 python_command = "python assignment4/py/delaunay.py"
-cpp_debug_command = "./assignment4/cpp/debug_exe"
-cpp_release_command = "./assignment4/cpp/release_exe"
+cpp_debug_command = "./assignment4/cpp/debug.exe"
+cpp_release_command = "./assignment4/cpp/release.exe"
 
-POINTS_NUMS = [100]
-# POINTS_NUMS = [100, 200, 400, 800]
+# POINTS_NUMS = [100]
+POINTS_NUMS = [100, 200, 400, 800]
 
 
 def main():
-    # 1. run python
-    # 2. run cpp debug
-    # 3. run cpp release
-    # 4. print results
-    # 5. plot results
     ITER_NUM = 10
     for points_num in POINTS_NUMS:
         print(f"points num: {points_num}")
-        [python_times, python_cpus, python_rams] = benchmark(
+        [py_time_stats, py_cpu_stats, py_ram_stats] = benchmark(
             "{0} {1}".format(python_command, points_num), ITER_NUM
         )
-        [cpp_debug_times, cpp_debug_cpus, cpp_debug_rams] = benchmark(
+        [cpp_debug_time_stats, cpp_debug_cpu_stats, cpp_debug_ram_stats] = benchmark(
             "{0} {1}".format(cpp_debug_command, points_num), ITER_NUM
         )
-        # cpp_debug_times = benchmark(cpp_debug_command)
-        # cpp_release_times = benchmark(cpp_release_command)
-
-        py_time_stats = Stats(python_times)
-        # py_cpu_stats = Stats(python_cpus)
-        # py_ram_stats = Stats(python_rams)
-        cpp_debug_stats = Stats(cpp_debug_times)
-        # cpp_release_stats = Stats(cpp_release_times)
+        [
+            cpp_release_time_stats,
+            cpp_release_cpu_stats,
+            cpp_release_ram_stats,
+        ] = benchmark("{0} {1}".format(cpp_release_command, points_num), ITER_NUM)
 
         plot_benchmarks(
-            [py_time_stats, cpp_debug_stats],
-            ["Python", "C++ debug"],
-            f"{points_num}points time, {ITER_NUM} iterations",
+            [py_time_stats, cpp_debug_time_stats, cpp_release_time_stats],
+            ["Python", "C++ debug", "C++ release"],
+            f"Time of execution ({points_num}points, {ITER_NUM} iterations)",
+            f"{points_num}points_{ITER_NUM}iter",
         )
-        print("python: {0}points time\n".format(points_num), py_time_stats)
-        print("C++ Debug: {0}points time\n".format(points_num), cpp_debug_stats)
-        # print("python: {0}points CPU\n".format(points_num), py_cpu_stats)
-        # print("python: {0}points RAM\n".format(points_num), py_ram_stats)
-    # print("cpp debug: ", cpp_debug_stats)
-    # print("cpp release: ", cpp_release_stats)
 
 
 def benchmark(command, iter_num=100):
@@ -84,51 +71,50 @@ def benchmark(command, iter_num=100):
         # cpu_usages.append(cpu_usage)
         # ram_usages.append(ram_usage)
 
-    return (time_diffs, cpu_usages, ram_usages)
+    return (Stats(time_diffs), Stats(cpu_usages), Stats(ram_usages))
 
 
 class Stats:
-    def __init__(self, lst):
+    def __init__(self, lst, round_num=2):
         self.lst = lst
+        self.round_num = round_num
 
     def __str__(self):
-        return f"ave: {self.ave()}\nmean: {self.mean()}\nmedian: {self.median()}\nstdev: {self.stdev()}\nmin: {self.min()}\nmax: {self.max()}"
+        return f"ave: {self.ave()}\nmedian: {self.median()}\nstdev: {self.stdev()}\nmin: {self.min()}\nmax: {self.max()}"
 
     def ave(self):
-        return sum(self.lst) / len(self.lst)
-
-    def mean(self):
-        return statistics.mean(self.lst)
+        return round(sum(self.lst) / len(self.lst), self.round_num)
 
     def median(self):
-        return statistics.median(self.lst)
+        return round(statistics.median(self.lst), self.round_num)
 
     def stdev(self):
-        return statistics.stdev(self.lst)
+        return round(statistics.stdev(self.lst), self.round_num)
 
     def min(self):
-        return min(self.lst)
+        return round(min(self.lst), self.round_num)
 
     def max(self):
-        return max(self.lst)
+        return round(max(self.lst), self.round_num)
 
 
-def plot_benchmarks(stats_list: List[Stats], langs: List[str], title: str):
-    metrics = ["ave", "mean"]
-    x = np.arange(len(metrics))  # the label locations
+def plot_benchmarks(
+    stats_list: List[Stats], langs: List[str], title: str, filename: str
+):
+    stat_metrics = [
+        "ave",
+        "median",
+    ]
+    x = np.arange(len(stat_metrics))  # the label locations
     values = [
         [
             stats.ave(),
-            stats.mean(),
-            # stats.median(),
-            # stats.stdev(),
-            # stats.min(),
-            # stats.max(),
+            stats.median(),
         ]
         for stats in stats_list
     ]
 
-    fig, ax = plt.subplots()
+    _fig, ax = plt.subplots()
 
     width = 0.25
     multiplier = 0
@@ -139,13 +125,13 @@ def plot_benchmarks(stats_list: List[Stats], langs: List[str], title: str):
         ax.bar_label(rects, padding=3)
         multiplier += 1
 
-    ax.set_title(title)
-    # ax.set_xticks(x + width, len(labels))
-    ax.set_xticklabels(metrics)
+    ax.set_title(title, y=-0.15)
+    ax.set_xticks(x + width, stat_metrics)
+    ax.set_xticklabels(stat_metrics)
     ax.set_ylabel("time (s)")
-    ax.legend(loc="upper right", ncol=2)
-    plt.savefig(f"{title}.png", format="png", dpi=300)
-    plt.show()
+    ax.legend(loc="upper right", bbox_to_anchor=(1, 1.15), ncols=len(langs))
+
+    plt.savefig(f"{filename}.png", format="png", dpi=300, bbox_inches="tight")
 
 
 def run_python():

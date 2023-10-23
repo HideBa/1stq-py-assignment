@@ -173,7 +173,6 @@ def main(n):
     """Perform triangulation of n points and write the resulting geometries
     to text files, where the geometry is stored as well-known text strings.
     """
-    n = 20
     pts = make_random_points(n)
     dt = DelaunayTriangulation(pts)
     dt.triangulate()

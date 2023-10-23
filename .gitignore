@@ -167,3 +167,4 @@ cython_debug/
 *.asc
 compare/**
 **/cpp/**.dSYM/**
+*.exe
